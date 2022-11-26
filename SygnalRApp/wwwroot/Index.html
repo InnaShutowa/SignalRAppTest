@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body::before {
+            content: '';
+            position: fixed; /* Фиксируем на одном месте */
+            left: 0;
+            right: 0; /* Вся ширин */
+            top: 0;
+            bottom: 0; /* Вся высота */
+            z-index: -1;
+            background: url(assets/moscow4.jpg) center no-repeat; /* Цвет фона и путь к файлу */
+            filter: blur(5px);
+        }
+        body {
+            color: #fff; /* Цвет текста */
+        }
+        .cursive {
+            font-family: 'Dancing Script', cursive;
+            text-transform: none;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div style="text-align: center; padding-top: 30vh;">
+        <h1 class="cursive">SignalR Test Application</h1>
+        <h4>Даже для чудес необходимо немного времени</h4>
+        <hr>
+        <a class="btn btn-primary btn-lg" href="Auth.html" role="button">Авторизоваться</a>
+    </div>
+
+</body>
+</html>
