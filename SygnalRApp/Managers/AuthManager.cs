@@ -1,10 +1,8 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using NLog;
 using SignalRApp.Entities;
-using SignalRApp.Extensions;
 using SignalRApp.Interfaces;
 using SignalRApp.Models;
-using SignalRApp.Services;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -36,46 +34,54 @@ namespace SignalRApp.Managers
                     return new ResultModel<AuthModel>(errMessage);
                 }
 
-                var ldapUser = LdapService.GetLdapUser(login, pass);
-                if (!ldapUser.IsSuccess)
+                /// Функционал с Ldap выключен
+                //var ldapUser = LdapService.GetLdapUser(login, pass);
+                //if (!ldapUser.IsSuccess)
+                //{
+                //    errMessage = ldapUser.Error;
+                //    _logger.Error(errMessage);
+
+                //    return new ResultModel<AuthModel>(errMessage);
+                //}
+
+                var userEntity = _userRepository.FindItemByLoginOrEmail(login);
+
+                if (userEntity == null)
                 {
-                    errMessage = ldapUser.Error;
+                    errMessage = "Input data is incorrect! Login or pass is empty";
                     _logger.Error(errMessage);
 
                     return new ResultModel<AuthModel>(errMessage);
                 }
 
-                var userEntity = _userRepository.FindItemByLogin(login);
-                if (userEntity != null)
-                {
-                    var claim = _getIdentity(userEntity);
-                    var jwt = _getJwtToken(claim);
+                var claim = _getIdentity(userEntity);
+                var jwt = _getJwtToken(claim);
 
-                    var ldapUserHash = ldapUser.Data.GenerateStateHash();
-                    if (userEntity.Hash != ldapUserHash)
-                    {
-                        ldapUser.Data.Hash = ldapUserHash;
-                        ldapUser.Data.Id = userEntity.Id;
-                        _userRepository.UpdateItem(ldapUser.Data);
-                    }
+                //var ldapUserHash = ldapUser.Data.GenerateStateHash();
+                //if (userEntity.Hash != ldapUserHash)
+                //{
+                //    ldapUser.Data.Hash = ldapUserHash;
+                //    ldapUser.Data.Id = userEntity.Id;
+                //    _userRepository.UpdateItem(ldapUser.Data);
+                //}
 
-                   // _userRepository.UpdateUsersPhoto();
-                    return new ResultModel<AuthModel>(new AuthModel(jwt, userEntity.Login, userEntity.Id));
-                }
-                else
-                {
-                    var userId = _userRepository.AddItem(ldapUser.Data);
-                    if (userId == null)
-                    {
-                        errMessage = "Something go wrong";
-                        _logger.Error(errMessage);
-                        return new ResultModel<AuthModel>(errMessage);
-                    }
-                    var claim = _getIdentity(ldapUser.Data);
-                    var jwt = _getJwtToken(claim);
+                // _userRepository.UpdateUsersPhoto();
+                return new ResultModel<AuthModel>(new AuthModel(jwt, userEntity.Login, userEntity.Id));
 
-                    return new ResultModel<AuthModel>(new AuthModel(jwt, ldapUser.Data.Login, (Guid)userId));
-                }
+                //else
+                //{
+                //    var userId = _userRepository.AddItem(ldapUser.Data);
+                //    if (userId == null)
+                //    {
+                //        errMessage = "Something go wrong";
+                //        _logger.Error(errMessage);
+                //        return new ResultModel<AuthModel>(errMessage);
+                //    }
+                //    var claim = _getIdentity(ldapUser.Data);
+                //    var jwt = _getJwtToken(claim);
+
+                //    return new ResultModel<AuthModel>(new AuthModel(jwt, ldapUser.Data.Login, (Guid)userId));
+                //}
             }
             catch (Exception ex)
             {
@@ -94,6 +100,7 @@ namespace SignalRApp.Managers
                    notBefore: DateTime.UtcNow,
                    claims: identity.Claims,
                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
@@ -104,9 +111,11 @@ namespace SignalRApp.Managers
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login)
                 };
-            ClaimsIdentity claimsIdentity =
+
+            var claimsIdentity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
+
             return claimsIdentity;
         }
     }

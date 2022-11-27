@@ -5,10 +5,10 @@ namespace SignalRApp.Interfaces
 {
     public interface IUserRepository : IBaseRepository
     {
-        UserEntity FindItemByLogin(string login);
-        List<UserEntity> GetAllUsers();
+        public UserEntity FindItemByLoginOrEmail(string login);
+        public List<UserEntity> GetAllUsers();
 
-        void KickAllUsers();
-        void UpdateUsersPhoto();
+        public void KickAllUsers();
+        public void UpdateUsersPhoto();
     }
 }

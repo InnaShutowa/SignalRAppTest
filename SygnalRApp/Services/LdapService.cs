@@ -23,7 +23,7 @@ namespace SignalRApp.Services
         /// <returns></returns>
         public static ResultModel<UserEntity> GetLdapUser(string login, string pass)
         {
-            var errMessage = "";
+            var errMessage = string.Empty;
             try
             {
                 var novelLdap = new LdapConnection();
@@ -37,7 +37,7 @@ namespace SignalRApp.Services
                 var ldapUser = result.Next();
                 if (ldapUser == null)
                 {
-                    errMessage = $"LdapUser with userName {login} and password {pass} wasn't found";
+                    errMessage = $"LdapUser with ";
                     _logger.Error(errMessage);
                     return new ResultModel<UserEntity>(errMessage);
                 }

@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json;
+
 using NLog;
+
 using SignalRApp.Entities;
 using SignalRApp.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,13 +48,22 @@ namespace SignalRApp.Repositories
             }
         }
 
-        public UserEntity FindItemByLogin(string login)
+        public UserEntity FindItemByLoginOrEmail(string login)
         {
+            if (string.IsNullOrWhiteSpace(login))
+            {
+                return null;
+            }
+            login = login.ToLower().Trim();
+
             try
             {
                 using (var db = new ApplicationContext())
                 {
-                    var usr = db.UserEntities.Where(a => a.Login == login).FirstOrDefault();
+                    var usr = db.UserEntities.Where(a => a.Login.ToLower() == login
+                        || a.EmailPrimary.ToLower() == login)
+                        .FirstOrDefault();
+
                     return usr;
                 }
             }

@@ -25,7 +25,7 @@ namespace SignalRApp.Managers
             var result = new List<TredModel>();
             try
             {
-                var currenrUser = _userRepository.FindItemByLogin(userName);
+                var currenrUser = _userRepository.FindItemByLoginOrEmail(userName);
                 var users = _userRepository.GetAllUsers();
                 if (!users.Any())
                 {
