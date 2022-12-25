@@ -3,9 +3,19 @@ using System;
 
 namespace SignalRApp.Interfaces
 {
+    /// <summary>
+    /// Базовый интерфейс для работы с бд
+    /// </summary>
     public interface IBaseRepository
     {
+        /// <summary>
+        /// Обновление сущности
+        /// </summary>
         void UpdateItem(BaseEntity item);
+
+        /// <summary>
+        /// Добавление сущности
+        /// </summary>
         Guid? AddItem(BaseEntity usr);
     }
 }

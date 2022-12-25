@@ -8,9 +8,12 @@ using SignalRApp.Interfaces;
 
 namespace SignalRApp.Repositories
 {
+    /// <inheritdoc cref="IMessageRepository" />
     public class MessageRepository : IMessageRepository
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+
+        /// <inheritdoc/>
         public Guid? AddItem(BaseEntity usr)
         {
             try
@@ -24,11 +27,12 @@ namespace SignalRApp.Repositories
             }
             catch (Exception ex)
             {
-                _logger.Error($"Error in AddItem MessageRepository {ex.Message}. Input data {JsonConvert.SerializeObject(usr)}.");
+                _logger.Error($"Error {ex.Message}. Input data {JsonConvert.SerializeObject(usr)}.");
                 return null;
             }
         }
 
+        /// <inheritdoc/>
         public void UpdateItem(BaseEntity item)
         {
             try
@@ -41,10 +45,11 @@ namespace SignalRApp.Repositories
             }
             catch (Exception ex)
             {
-                _logger.Error($"Error in FoundItemByLogin MessageRepository with error {ex.Message}");
+                _logger.Error($"Error {ex.Message}");
             }
         }
 
+        /// <inheritdoc/>
         public List<MessageEntity> GetUnreadMessages(Guid recipientUserId, Guid authorUserId)
         {
             var result = new List<MessageEntity>();
@@ -57,8 +62,9 @@ namespace SignalRApp.Repositories
             }
             catch (Exception ex)
             {
-                _logger.Error($"Error in FoundItemByLogin MessageRepository with error {ex.Message}");
+                _logger.Error($"Error {ex.Message}");
             }
+
             return result;
         }
     }

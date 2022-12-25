@@ -2,6 +2,9 @@
 
 namespace SignalRApp.Entities
 {
+    /// <summary>
+    /// Сущность сообщения
+    /// </summary>
     public class MessageEntity : BaseEntity
     {
         public Guid AuthorUserId { get; set; }

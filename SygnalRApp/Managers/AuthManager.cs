@@ -57,6 +57,7 @@ namespace SignalRApp.Managers
                 var claim = _getIdentity(userEntity);
                 var jwt = _getJwtToken(claim);
 
+                /// проверка по хешу, изменились ли данные пользователя на стороне LDAP
                 //var ldapUserHash = ldapUser.Data.GenerateStateHash();
                 //if (userEntity.Hash != ldapUserHash)
                 //{
@@ -66,22 +67,8 @@ namespace SignalRApp.Managers
                 //}
 
                 // _userRepository.UpdateUsersPhoto();
+
                 return new ResultModel<AuthModel>(new AuthModel(jwt, userEntity.Login, userEntity.Id));
-
-                //else
-                //{
-                //    var userId = _userRepository.AddItem(ldapUser.Data);
-                //    if (userId == null)
-                //    {
-                //        errMessage = "Something go wrong";
-                //        _logger.Error(errMessage);
-                //        return new ResultModel<AuthModel>(errMessage);
-                //    }
-                //    var claim = _getIdentity(ldapUser.Data);
-                //    var jwt = _getJwtToken(claim);
-
-                //    return new ResultModel<AuthModel>(new AuthModel(jwt, ldapUser.Data.Login, (Guid)userId));
-                //}
             }
             catch (Exception ex)
             {

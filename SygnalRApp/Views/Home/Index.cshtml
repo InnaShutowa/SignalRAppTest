@@ -1,0 +1,58 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/dist/css/styles.css" />
+
+<html>
+<body>
+    <div style="text-align: center; padding-top: 30vh;">
+        <h1 class="cursive">SignalR Test Application</h1>
+        <h4>Даже для чудес необходимо немного времени</h4>
+        <hr>
+
+        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#auth" id="button-document-replace-coh">
+            Авторизоваться
+        </button>
+    </div>
+</body>
+</html>
+
+
+<div class="modal fade" id="auth" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px;">
+
+        <div class="modal-content position-relative" style="padding: 30px; text-align: center;">
+            <div class="position-absolute top-0 end-0 mt-2 me-2 z-index-1">
+                <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+
+            <form asp-action="Token" asp-controller="Account" method="post" enctype="multipart/form-data">
+                <div class="card-body p-0">
+                    <h2>Авторизация</h2>
+
+                    <div class="alert alert-error" style="display: none; color: red;" id="auth_error"></div>
+                    <div class="form-group" style="margin: 10px;">
+                        <input class="form-controle-locale border-0 outline-none px-card" name="userName" placeholder="Login" style="margin: 3px;">
+                        <input type="password" class="form-controle-locale border-0 outline-none px-card" name="password" placeholder="Password" style="margin: 3px;">
+                    </div>
+                </div>
+
+                <div style="margin-left: 15%;" class="card-footer align-items-center">
+                    <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-warning btn-sm px-5 mr-2" data-bs-dismiss="modal">
+                            Отмена
+                        </button>
+                        <button class="btn btn-primary btn-sm px-5 mr-2"
+                                type="submit">
+                            Отправить
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SignalRApp.Entities;
 using SignalRApp.Managers;
 using SignalRApp.Models;
 using SignalRApp.Repositories;
