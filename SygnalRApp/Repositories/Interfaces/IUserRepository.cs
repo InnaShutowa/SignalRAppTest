@@ -1,5 +1,6 @@
 ﻿using SignalRApp.Entities;
 
+using System;
 using System.Collections.Generic;
 
 namespace SignalRApp.Repositories.Interfaces
@@ -12,7 +13,7 @@ namespace SignalRApp.Repositories.Interfaces
         /// <summary>
         /// Поиск пользователя по email или логину
         /// </summary>
-        /// <param name="login"></param>
+        /// <param name="login">Имя пользователя или email</param>
         /// <returns>Сущность пользователя</returns>
         public UserEntity FindItemByLoginOrEmail(string login);
 
@@ -21,5 +22,19 @@ namespace SignalRApp.Repositories.Interfaces
         /// </summary>
         /// <returns>Список пользователей</returns>
         public List<UserEntity> GetAllUsers();
+
+        /// <summary>
+        /// Получает id пользователя в системе
+        /// </summary>
+        /// <param name="identityId">Identity id</param>
+        /// <returns></returns>
+        public Guid? GetUserIdByIdentityId(string identityId);
+
+        /// <summary>
+        /// Поиск пользователя по id
+        /// </summary>
+        /// <param name="id">Id пользователя в системе</param>
+        /// <returns>Сущность пользователя</returns>
+        public UserEntity FindItemByGuid(Guid? id);
     }
 }

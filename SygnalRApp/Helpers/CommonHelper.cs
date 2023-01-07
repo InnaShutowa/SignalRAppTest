@@ -187,6 +187,7 @@ namespace SignalRApp.Helpers
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<MessengerService>();
             services.AddScoped<AccountService>();
+            services.AddScoped<UsersService>();
         }
 
         /// <summary>

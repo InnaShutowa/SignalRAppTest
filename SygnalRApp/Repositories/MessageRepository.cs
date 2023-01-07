@@ -14,7 +14,6 @@ namespace SignalRApp.Repositories
     /// <inheritdoc cref="IMessageRepository" />
     public class MessageRepository : IMessageRepository
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ApplicationContext _db;
 
         public MessageRepository(ApplicationContext db)
@@ -25,49 +24,36 @@ namespace SignalRApp.Repositories
         /// <inheritdoc/>
         public Guid? AddItem(BaseEntity usr)
         {
-            try
-            {
-                var res = _db.MessageEntities.Add(usr as MessageEntity);
-                _db.SaveChanges();
+            var res = _db.MessageEntities.Add(usr as MessageEntity);
+            _db.SaveChanges();
 
-                return res.Entity.Id;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error {ex.Message}. Input data {JsonConvert.SerializeObject(usr)}.");
-
-                return null;
-            }
+            return res.Entity.Id;
         }
 
         /// <inheritdoc/>
         public void UpdateItem(BaseEntity item)
         {
-            try
-            {
-                _db.MessageEntities.Update(item as MessageEntity);
-                _db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error {ex.Message}");
-            }
+            _db.MessageEntities.Update(item as MessageEntity);
+            _db.SaveChanges();
         }
 
         /// <inheritdoc/>
-        public List<MessageEntity> GetUnreadMessages(Guid recipientUserId, Guid authorUserId)
+        public int GetUnreadMessages(Guid recipientUserId, Guid authorUserId)
         {
-            var result = new List<MessageEntity>();
-            try
-            {
-                result = _db.MessageEntities.Where(a => a.RecipientUserId == recipientUserId && a.AuthorUserId == authorUserId && !a.IsRead).ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error {ex.Message}");
-            }
+            return _db.MessageEntities
+                .Where(a => a.RecipientUserId == recipientUserId)
+                .Where(a => a.AuthorUserId == authorUserId)
+                .Where(a=> !a.IsRead)
+                .Count();
+        }
 
-            return result;
+        /// <inheritdoc/>
+        public IEnumerable<MessageEntity> GetUsersTred(Guid recipientUserId, Guid authorUserId)
+        {
+            return _db.MessageEntities
+                .Where(a => a.RecipientUserId == recipientUserId)
+                .Where(a => a.AuthorUserId == authorUserId)
+                .ToList();
         }
     }
 }

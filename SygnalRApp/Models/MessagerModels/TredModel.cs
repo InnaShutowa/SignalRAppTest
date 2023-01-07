@@ -5,20 +5,37 @@ using System.Threading.Tasks;
 
 namespace SignalRApp.Models.MessagerModels
 {
+    /// <summary>
+    /// Модель чата
+    /// </summary>
     public class TredModel
     {
         public TredModel(Guid userId, string userName, string photo, int messageCount)
         {
-            RecipientUserId = userId;
-            RecipientUsername = userName;
+            CompanionUserId = userId;
+            CompanionUsername = userName;
             UnreadMessagesCount = messageCount;
-            RecipientJpegPhoto = photo;
-
-
+            CompanionJpegPhoto = photo;
         }
+
+        /// <summary>
+        /// Количество непрочитанных сообщений 
+        /// </summary>
         public int UnreadMessagesCount { get; set; }
-        public Guid RecipientUserId { get; set; }
-        public string RecipientUsername { get; set; }
-        public string RecipientJpegPhoto { get; set; }
+
+        /// <summary>
+        /// Id возможного собеседника
+        /// </summary>
+        public Guid CompanionUserId { get; set; }
+
+        /// <summary>
+        /// Имя возможного собеседника
+        /// </summary>
+        public string CompanionUsername { get; set; }
+
+        /// <summary>
+        /// Фото возможного собеседника
+        /// </summary>
+        public string CompanionJpegPhoto { get; set; }
     }
 }

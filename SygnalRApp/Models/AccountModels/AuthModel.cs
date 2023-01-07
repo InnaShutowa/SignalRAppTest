@@ -5,6 +5,7 @@ namespace SignalRApp.Models.AccountModels
     /// <summary>
     /// Модель с данными для авторизованного пользователя
     /// </summary>
+    [Obsolete]
     public class AuthModel
     {
         public AuthModel(string accessToken, string username, Guid userId)

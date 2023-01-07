@@ -19,13 +19,13 @@ namespace SignalRApp.Controllers
         }
 
         /// <summary>
-        /// Авторизация и получение jwt-токена
+        /// Авторизация
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
         [HttpPost("/token")]
-        public async Task<ResultModel<AuthModel>> Token(string username, string password)
+        public async Task<IActionResult> Token(string username, string password)
         {
             var authModel = await _accountService.LoginUser(new AuthInputModel
             {
@@ -35,10 +35,22 @@ namespace SignalRApp.Controllers
 
             if (!authModel.IsSuccess)
             {
-                return new ResultModel<AuthModel>(authModel.Error);
+                return View(authModel.Error);
             }
 
-            return authModel;
+            return RedirectToAction(nameof(MessengerController.Users), "Messenger");
+        }
+
+        /// <summary>
+        /// Выход из аккаунта
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("/logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.LogoutUser();
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
     }
 }

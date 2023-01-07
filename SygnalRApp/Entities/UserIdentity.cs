@@ -11,6 +11,11 @@ namespace SignalRApp.Entities
     /// </summary>
     public class UserIdentity : IdentityUser
     {
+        public UserIdentity() : base()
+        {
+            UpdatedAt = CreatedAt = DateTime.UtcNow;
+        }
+
         /// <summary>
         /// Дата и время создания в UTC
         /// </summary>
@@ -25,10 +30,5 @@ namespace SignalRApp.Entities
         /// Коллекция клаймов пользователя
         /// </summary>
         public ICollection<IdentityUserClaim<string>> Claims { get; set; }
-
-        public UserIdentity() : base()
-        {
-            UpdatedAt = CreatedAt = DateTime.UtcNow;
-        }
     }
 }

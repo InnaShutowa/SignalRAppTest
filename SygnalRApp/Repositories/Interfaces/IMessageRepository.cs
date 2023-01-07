@@ -11,11 +11,19 @@ namespace SignalRApp.Repositories.Interfaces
     public interface IMessageRepository : IBaseRepository
     {
         /// <summary>
-        /// Метод для получения непрочитанных сообщений
+        /// Метод для получения количества непрочитанных сообщений
         /// </summary>
         /// <param name="recipientUserId">Id получателя</param>
         /// <param name="authorUserId">Id автора</param>
         /// <returns>Список сообщений</returns>
-        List<MessageEntity> GetUnreadMessages(Guid recipientUserId, Guid authorUserId);
+        int GetUnreadMessages(Guid recipientUserId, Guid authorUserId);
+
+        /// <summary>
+        /// Метод для получения количества непрочитанных сообщений
+        /// </summary>
+        /// <param name="recipientUserId">Id получателя</param>
+        /// <param name="authorUserId">Id автора</param>
+        /// <returns>Список сообщений</returns>
+        IEnumerable<MessageEntity> GetUsersTred(Guid recipientUserId, Guid authorUserId);
     }
 }

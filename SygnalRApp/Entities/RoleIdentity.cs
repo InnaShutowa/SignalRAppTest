@@ -7,13 +7,11 @@ namespace SignalRApp.Entities
     /// </summary>
     public class RoleIdentity : IdentityRole
     {
+        public RoleIdentity() : base() { }
+
         /// <summary>
         /// Название роли для вывода на странице
         /// </summary>
         public string? DisplayName { get; set; }
-
-        public RoleIdentity() : base()
-        {
-        }
     }
 }

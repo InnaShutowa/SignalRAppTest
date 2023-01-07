@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using NLog;
+
 using SignalRApp.Models;
 using SignalRApp.Models.MessagerModels;
 using SignalRApp.Repositories.Interfaces;
 
 namespace SignalRApp.Services
 {
+    /// <summary>
+    /// Сервис для работы с сообщениями
+    /// </summary>
     public class MessengerService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
@@ -20,34 +25,86 @@ namespace SignalRApp.Services
             _messageRepository = messageRepository;
         }
 
-        public ResultModel<List<TredModel>> GetTredsList(string userName)
+        /// <summary>
+        /// Получаем список сообщений между конкретными пользователями, отсортированный от более поздних сообщений к более ранним
+        /// </summary>
+        /// <param name="currentUserId">Id текущего пользователя</param>
+        /// <param name="recipientUserId">Id получателя</param>
+        /// <returns>Список сообщений</returns>
+        public ResultDataModel<List<MessageModel>> GetMessagesList(Guid? currentUserId, Guid recipientUserId)
         {
-            var errMessage = "";
-            var result = new List<TredModel>();
             try
             {
-                var currenrUser = _userRepository.FindItemByLoginOrEmail(userName);
-                var users = _userRepository.GetAllUsers();
-                if (!users.Any())
+                var currentUser = _userRepository.FindItemByGuid(currentUserId);
+                var recipientUser = _userRepository.FindItemByGuid(recipientUserId);
+
+                if (currentUser == null || recipientUser == null)
                 {
-                    errMessage = "Users weren't found";
-                    _logger.Warn(errMessage);
-                    return new ResultModel<List<TredModel>>(errMessage);
+                    return new ResultDataModel<List<MessageModel>>("Пользователь не найден, попробуйте снова позже.");
                 }
 
-                users.ForEach(user =>
-                {
-                    var messages = _messageRepository.GetUnreadMessages(currenrUser.Id, user.Id);
-                    result.Add(new TredModel(user.Id, user.Login, user.JpegPhoto, messages.Count));
-                });
+                var messages = _messageRepository
+                    .GetUsersTred(recipientUserId, currentUserId.Value)
+                    .OrderByDescending(a => a.CreatedAt)
+                    .Select(a => new MessageModel
+                    {
+                        Text = a.Text,
+                        SendDate = a.CreatedAt,
+                        IsOutgoing = a.AuthorUserId == currentUserId
+                    })
+                    .ToList();
 
-                return new ResultModel<List<TredModel>>(result);
+                return new ResultDataModel<List<MessageModel>>(messages);
             }
             catch (Exception ex)
             {
-                errMessage = $"Error in GetTredsList for {userName}: {ex.Message}";
-                _logger.Warn(errMessage);
-                return new ResultModel<List<TredModel>>(errMessage);
+                _logger.Error($"Error {ex.Message}, currentUserId = {currentUserId},  recipientUserId={recipientUserId}");
+
+                return new ResultDataModel<List<MessageModel>>($"Что-то пошло не так, попробуйте снова позже.");
+            }
+        }
+
+        /// <summary>
+        /// Получаем список тредов
+        /// </summary>
+        /// <param name="userId">Id пользователя в системе</param>
+        /// <returns></returns>
+        public ResultDataModel<List<TredModel>> GetTredsList(Guid? userId)
+        {
+            var result = new List<TredModel>();
+            try
+            {
+                var currenrUser = _userRepository.FindItemByGuid(userId);
+
+                if (currenrUser == null)
+                {
+                    return new ResultDataModel<List<TredModel>>("Текущий пользователь не найден, попробуйте снова позже.");
+                }
+
+                var users = _userRepository.GetAllUsers();
+                if (!users.Any())
+                {
+                    return new ResultDataModel<List<TredModel>>("Пользователи не найдены, попробуйте снова позже.");
+                }
+
+                foreach (var user in users)
+                {
+                    if (currenrUser.Id == user.Id)
+                    {
+                        continue;
+                    }
+
+                    var messagesCount = _messageRepository.GetUnreadMessages(currenrUser.Id, user.Id);
+                    result.Add(new TredModel(user.Id, user.Login, user.JpegPhoto, messagesCount));
+                }
+
+                return new ResultDataModel<List<TredModel>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error {ex.Message}, userId = {userId}");
+
+                return new ResultDataModel<List<TredModel>>($"Что-то пошло не так, попробуйте снова позже.");
             }
         }
     }

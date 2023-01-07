@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-using NLog;
+﻿using NLog;
 
 using SignalRApp.Entities;
 using SignalRApp.Repositories.Interfaces;
@@ -14,7 +12,6 @@ namespace SignalRApp.Repositories
     /// <inheritdoc cref="IUserRepository" />
     public class UserRepository : IUserRepository
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ApplicationContext _db;
         public UserRepository(ApplicationContext db)
         {
@@ -24,35 +21,20 @@ namespace SignalRApp.Repositories
         /// <inheritdoc/>
         public Guid? AddItem(BaseEntity usr)
         {
-            try
-            {
-                var res = _db.UserEntities.Add(usr as UserEntity);
-                _db.SaveChanges();
-                return res.Entity.Id;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error {ex.Message}. Input data {JsonConvert.SerializeObject(usr)}.");
-                return null;
-            }
+            var res = _db.UserEntities.Add(usr as UserEntity);
+            _db.SaveChanges();
+            return res.Entity.Id;
         }
 
         /// <inheritdoc/>
         public void UpdateItem(BaseEntity item)
         {
-            try
-            {
-                _db.UserEntities.Update(item as UserEntity);
-                _db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error {ex.Message}");
-            }
+            _db.UserEntities.Update(item as UserEntity);
+            _db.SaveChanges();
         }
 
         /// <inheritdoc/>
-        public UserEntity? FindItemByLoginOrEmail(string login)
+        public UserEntity FindItemByLoginOrEmail(string login)
         {
             if (string.IsNullOrWhiteSpace(login))
             {
@@ -60,35 +42,31 @@ namespace SignalRApp.Repositories
             }
             login = login.ToLower().Trim();
 
-            try
-            {
-                var usr = _db.UserEntities.Where(a => a.Login.ToLower() == login
-                    || a.EmailPrimary.ToLower() == login)
-                    .FirstOrDefault();
-
-                return usr;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error {ex.Message}. Login {login}");
-                return null;
-            }
+            return _db.UserEntities.Where(a => a.Login.ToLower() == login
+                || a.EmailPrimary.ToLower() == login)
+                .FirstOrDefault();
         }
 
         /// <inheritdoc/>
         public List<UserEntity> GetAllUsers()
         {
-            var result = new List<UserEntity>();
-            try
-            {
-                result = _db.UserEntities.ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error {ex.Message}.");
-            }
+            return _db.UserEntities.ToList();
+        }
 
-            return result;
+        /// <inheritdoc/>
+        public Guid? GetUserIdByIdentityId(string identityId)
+        {
+            return _db.UserEntities
+                .FirstOrDefault(l => l.IdentityId == identityId)?.Id;
+        }
+
+        /// <inheritdoc/>
+        public UserEntity FindItemByGuid(Guid? id)
+        {
+            var usr = _db.UserEntities.Where(a => a.Id == id)
+                .FirstOrDefault();
+
+            return usr;
         }
     }
 }

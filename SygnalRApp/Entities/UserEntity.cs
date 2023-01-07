@@ -37,7 +37,7 @@ namespace SignalRApp.Entities
         /// <summary>
         /// Фото
         /// </summary>
-        public string? JpegPhoto { get; set; }
+        public string JpegPhoto { get; set; }
 
         /// <summary>
         /// Email
