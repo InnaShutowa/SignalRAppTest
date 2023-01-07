@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Newtonsoft.Json;
+
 using NLog;
+
 using SignalRApp.Entities;
-using SignalRApp.Interfaces;
+using SignalRApp.Repositories.Interfaces;
 
 namespace SignalRApp.Repositories
 {
@@ -12,22 +15,27 @@ namespace SignalRApp.Repositories
     public class MessageRepository : IMessageRepository
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ApplicationContext _db;
+
+        public MessageRepository(ApplicationContext db)
+        {
+            _db = db;
+        }
 
         /// <inheritdoc/>
         public Guid? AddItem(BaseEntity usr)
         {
             try
             {
-                using (var db = new ApplicationContext())
-                {
-                    var res = db.MessageEntities.Add(usr as MessageEntity);
-                    db.SaveChanges();
-                    return res.Entity.Id;
-                }
+                var res = _db.MessageEntities.Add(usr as MessageEntity);
+                _db.SaveChanges();
+
+                return res.Entity.Id;
             }
             catch (Exception ex)
             {
                 _logger.Error($"Error {ex.Message}. Input data {JsonConvert.SerializeObject(usr)}.");
+
                 return null;
             }
         }
@@ -37,11 +45,8 @@ namespace SignalRApp.Repositories
         {
             try
             {
-                using (var db = new ApplicationContext())
-                {
-                    db.MessageEntities.Update(item as MessageEntity);
-                    db.SaveChanges();
-                }
+                _db.MessageEntities.Update(item as MessageEntity);
+                _db.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -55,10 +60,7 @@ namespace SignalRApp.Repositories
             var result = new List<MessageEntity>();
             try
             {
-                using (var db = new ApplicationContext())
-                {
-                    result = db.MessageEntities.Where(a => a.RecipientUserId == recipientUserId && a.AuthorUserId == authorUserId && !a.IsRead).ToList();
-                }
+                result = _db.MessageEntities.Where(a => a.RecipientUserId == recipientUserId && a.AuthorUserId == authorUserId && !a.IsRead).ToList();
             }
             catch (Exception ex)
             {

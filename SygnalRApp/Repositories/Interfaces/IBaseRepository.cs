@@ -1,7 +1,8 @@
 ﻿using SignalRApp.Entities;
+
 using System;
 
-namespace SignalRApp.Interfaces
+namespace SignalRApp.Repositories.Interfaces
 {
     /// <summary>
     /// Базовый интерфейс для работы с бд

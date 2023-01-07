@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json;
+
 using NLog;
+
 using SignalRApp.Entities;
-using SignalRApp.Interfaces;
+using SignalRApp.Repositories.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +15,20 @@ namespace SignalRApp.Repositories
     public class UserRepository : IUserRepository
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ApplicationContext _db;
+        public UserRepository(ApplicationContext db)
+        {
+            _db = db;
+        }
 
         /// <inheritdoc/>
         public Guid? AddItem(BaseEntity usr)
         {
             try
             {
-                using (var db = new ApplicationContext())
-                {
-                    var res = db.UserEntities.Add(usr as UserEntity);
-                    db.SaveChanges();
-                    return res.Entity.Id;
-                }
+                var res = _db.UserEntities.Add(usr as UserEntity);
+                _db.SaveChanges();
+                return res.Entity.Id;
             }
             catch (Exception ex)
             {
@@ -37,11 +42,8 @@ namespace SignalRApp.Repositories
         {
             try
             {
-                using (var db = new ApplicationContext())
-                {
-                    db.UserEntities.Update(item as UserEntity);
-                    db.SaveChanges();
-                }
+                _db.UserEntities.Update(item as UserEntity);
+                _db.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -60,14 +62,11 @@ namespace SignalRApp.Repositories
 
             try
             {
-                using (var db = new ApplicationContext())
-                {
-                    var usr = db.UserEntities.Where(a => a.Login.ToLower() == login
-                        || a.EmailPrimary.ToLower() == login)
-                        .FirstOrDefault();
+                var usr = _db.UserEntities.Where(a => a.Login.ToLower() == login
+                    || a.EmailPrimary.ToLower() == login)
+                    .FirstOrDefault();
 
-                    return usr;
-                }
+                return usr;
             }
             catch (Exception ex)
             {
@@ -82,10 +81,7 @@ namespace SignalRApp.Repositories
             var result = new List<UserEntity>();
             try
             {
-                using (var db = new ApplicationContext())
-                {
-                    result = db.UserEntities.ToList();
-                }
+                result = _db.UserEntities.ToList();
             }
             catch (Exception ex)
             {

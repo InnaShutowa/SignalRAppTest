@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using SignalRApp.Interfaces;
 using SignalRApp.Models;
+using SignalRApp.Models.MessagerModels;
+using SignalRApp.Repositories.Interfaces;
 
-namespace SignalRApp.Managers
+namespace SignalRApp.Services
 {
-    public class MessengerManager
+    public class MessengerService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IUserRepository _userRepository;
         private readonly IMessageRepository _messageRepository;
 
-        public MessengerManager(IUserRepository userRepository, IMessageRepository messageRepository)
+        public MessengerService(IUserRepository userRepository, IMessageRepository messageRepository)
         {
             _userRepository = userRepository;
             _messageRepository = messageRepository;
@@ -41,7 +42,8 @@ namespace SignalRApp.Managers
                 });
 
                 return new ResultModel<List<TredModel>>(result);
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 errMessage = $"Error in GetTredsList for {userName}: {ex.Message}";
                 _logger.Warn(errMessage);

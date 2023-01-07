@@ -8,14 +8,14 @@ namespace SignalRApp.Entities
     /// </summary>
     public class UserEntity : BaseEntity
     {
-        public UserEntity(string firstName, string lastName, string login, string email, string photo)
+        public UserEntity(string firstName, string lastName, string login, string emailPrimary, string? jpegPhoto)
         {
             Id = Guid.NewGuid();
             Login = login;
             FirstName = firstName;
             LastName = lastName;
-            JpegPhoto = photo;
-            EmailPrimary = email;
+            JpegPhoto = jpegPhoto;
+            EmailPrimary = emailPrimary;
             Hash = this.GenerateStateHash();
         }
 
@@ -37,7 +37,7 @@ namespace SignalRApp.Entities
         /// <summary>
         /// Фото
         /// </summary>
-        public string JpegPhoto { get; set; }
+        public string? JpegPhoto { get; set; }
 
         /// <summary>
         /// Email
@@ -48,5 +48,15 @@ namespace SignalRApp.Entities
         /// Хеш для проверки нужно ли обновлять данные
         /// </summary>
         public string Hash { get; set; }
+
+        /// <summary>
+        /// ID сущности данных авторизации ASP.NET Identity
+        /// </summary>
+        public string IdentityId { get; set; }
+
+        /// <summary>
+        /// Данные авторизации пользователя ASP.NET Identity
+        /// </summary>
+        public UserIdentity Identity { get; set; }
     }
 }

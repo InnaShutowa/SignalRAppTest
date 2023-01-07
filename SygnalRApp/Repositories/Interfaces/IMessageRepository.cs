@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using SignalRApp.Entities;
 
-namespace SignalRApp.Interfaces
+namespace SignalRApp.Repositories.Interfaces
 {
     /// <summary>
     /// Интерфейс для действий с сообщениями

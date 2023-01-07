@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using SignalRApp;
+using SignalRApp.Helpers;
 using SignalRApp.Hubs;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,11 @@ namespace SygnalRApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationContext>();
+
+            CommonHelper.ConfigureIdentity(services);
+            CommonHelper.ConfigureServices(services);
+
             services.AddSignalR();
             services.AddControllersWithViews();
 

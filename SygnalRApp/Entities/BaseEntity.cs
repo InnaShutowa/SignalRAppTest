@@ -17,16 +17,16 @@ namespace SignalRApp.Entities
         /// <summary>
         /// Дата и время создания в UTC
         /// </summary>
-        public DateTime CreateDateTimeUtc { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         /// <summary>
         /// Дата и время последнего изменения данных сущности в UTC
         /// </summary>
-        public DateTime ModifyDateTimeUtc { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
         protected BaseEntity()
         {
-            ModifyDateTimeUtc = CreateDateTimeUtc = DateTime.UtcNow;
+            UpdatedAt = CreatedAt = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace SignalRApp.Entities
         /// </remarks>
         public void UpdateModifiedTimestamp()
         {
-            ModifyDateTimeUtc = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }
