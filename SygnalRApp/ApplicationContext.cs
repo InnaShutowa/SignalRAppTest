@@ -66,6 +66,10 @@ namespace SignalRApp
                 .WithOne()
                 .HasForeignKey(x => x.UserId)
                 .IsRequired();
+
+            modelBuilder.Entity<UserIdentity>()
+                .HasIndex(x => x.UserName)
+                .IsUnique();
         }
 
         /// <summary>
@@ -81,6 +85,10 @@ namespace SignalRApp
 
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(x => x.IdentityId)
+                .IsUnique();
+
+            modelBuilder.Entity<UserEntity>()
+                .HasIndex(x => x.Login)
                 .IsUnique();
         }
 
