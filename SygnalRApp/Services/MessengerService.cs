@@ -4,16 +4,16 @@ using System.Linq;
 
 using NLog;
 
+using SignalRApp.Entities;
 using SignalRApp.Models;
 using SignalRApp.Models.MessagerModels;
 using SignalRApp.Repositories.Interfaces;
+using SignalRApp.Services.Interfaces;
 
 namespace SignalRApp.Services
 {
-    /// <summary>
-    /// Сервис для работы с сообщениями
-    /// </summary>
-    public class MessengerService
+    /// <inheritdoc cref="IMessageRepository" />
+    public class MessengerService : IMessengerService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IUserRepository _userRepository;
@@ -25,18 +25,46 @@ namespace SignalRApp.Services
             _messageRepository = messageRepository;
         }
 
-        /// <summary>
-        /// Получаем список сообщений между конкретными пользователями, отсортированный от более поздних сообщений к более ранним
-        /// </summary>
-        /// <param name="currentUserId">Id текущего пользователя</param>
-        /// <param name="recipientUserId">Id получателя</param>
-        /// <returns>Список сообщений</returns>
-        public ResultDataModel<List<MessageModel>> GetMessagesList(Guid? currentUserId, Guid recipientUserId)
+        /// <inheritdoc/>
+        public ResultModel AddMessage(string authorUserName, 
+            string recipientUserName, 
+            string text)
         {
             try
             {
-                var currentUser = _userRepository.FindItemByGuid(currentUserId);
-                var recipientUser = _userRepository.FindItemByGuid(recipientUserId);
+                var authorUser = _userRepository.GetItemByLoginOrEmail(authorUserName);
+                var recipientUser = _userRepository.GetItemByLoginOrEmail(recipientUserName);
+
+                if (authorUser == null || recipientUser == null)
+                {
+                    return new ResultModel("Пользователь не найден, попробуйте снова позже.");
+                }
+
+                var messages = _messageRepository.AddItem(new MessageEntity
+                {
+                    AuthorUserId = authorUser.Id,
+                    RecipientUserId = recipientUser.Id,
+                    IsRead = false,
+                    Text = text
+                });
+
+                return new ResultModel(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error {ex.Message}, authorUserName = {authorUserName},  recipientUserName={recipientUserName}");
+
+                return new ResultModel($"Что-то пошло не так, попробуйте снова позже.");
+            }
+        }
+
+        /// <inheritdoc/>
+        public ResultDataModel<List<MessageModel>> GetMessagesList(Guid? currentUserId, Guid? recipientUserId)
+        {
+            try
+            {
+                var currentUser = _userRepository.GetItemByGuid(currentUserId);
+                var recipientUser = _userRepository.GetItemByGuid(recipientUserId);
 
                 if (currentUser == null || recipientUser == null)
                 {
@@ -44,7 +72,7 @@ namespace SignalRApp.Services
                 }
 
                 var messages = _messageRepository
-                    .GetUsersTred(recipientUserId, currentUserId.Value)
+                    .GetUsersTred(recipientUserId.Value, currentUserId.Value)
                     .OrderByDescending(a => a.CreatedAt)
                     .Select(a => new MessageModel
                     {
@@ -64,17 +92,13 @@ namespace SignalRApp.Services
             }
         }
 
-        /// <summary>
-        /// Получаем список тредов
-        /// </summary>
-        /// <param name="userId">Id пользователя в системе</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public ResultDataModel<List<TredModel>> GetTredsList(Guid? userId)
         {
             var result = new List<TredModel>();
             try
             {
-                var currenrUser = _userRepository.FindItemByGuid(userId);
+                var currenrUser = _userRepository.GetItemByGuid(userId);
 
                 if (currenrUser == null)
                 {

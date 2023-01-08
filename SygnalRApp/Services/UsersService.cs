@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Security.Claims;
-
 using Microsoft.AspNetCore.Identity;
-
-using NLog;
-
 using SignalRApp.Entities;
 using SignalRApp.Models.Users;
 using SignalRApp.Repositories.Interfaces;
+using SignalRApp.Services.Interfaces;
 
 namespace SignalRApp.Services
 {
-    /// <summary>
-    /// Сервис для операций над пользователями
-    /// </summary>
-    public class UsersService
+    /// <inheritdoc cref="IUsersService" />
+    public class UsersService : IUsersService
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IUserRepository _userRepository;
         private readonly UserManager<UserIdentity> _userManager;
 
@@ -26,11 +20,7 @@ namespace SignalRApp.Services
             _userManager = userManager;
         }
 
-        /// <summary>
-        /// Получает идентификатор пользователя в системе
-        /// </summary>
-        /// <param name="claimsPrincipal">Авторизационные клеймы пользователя</param>
-        /// <returns>Id в системе</returns>
+        /// <inheritdoc/>
         public Guid? GetCurrentUserId(ClaimsPrincipal claimsPrincipal)
         {
             var userIdentity = _userManager.GetUserId(claimsPrincipal);
@@ -38,14 +28,10 @@ namespace SignalRApp.Services
             return _userRepository.GetUserIdByIdentityId(userIdentity);
         }
 
-        /// <summary>
-        /// Получает информацию о пользователе
-        /// </summary>
-        /// <param name="userId">Id пользователя в системе</param>
-        /// <returns>Модель информации о пользователе</returns>
+        /// <inheritdoc/>
         public UserModel GetUserInfo(Guid? userId)
         {
-            var userInfo = _userRepository.FindItemByGuid(userId);
+            var userInfo = _userRepository.GetItemByGuid(userId);
 
             if (userInfo != null)
             {

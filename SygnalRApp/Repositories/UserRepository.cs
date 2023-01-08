@@ -34,7 +34,7 @@ namespace SignalRApp.Repositories
         }
 
         /// <inheritdoc/>
-        public UserEntity FindItemByLoginOrEmail(string login)
+        public UserEntity GetItemByLoginOrEmail(string login)
         {
             if (string.IsNullOrWhiteSpace(login))
             {
@@ -61,7 +61,7 @@ namespace SignalRApp.Repositories
         }
 
         /// <inheritdoc/>
-        public UserEntity FindItemByGuid(Guid? id)
+        public UserEntity GetItemByGuid(Guid? id)
         {
             var usr = _db.UserEntities.Where(a => a.Id == id)
                 .FirstOrDefault();

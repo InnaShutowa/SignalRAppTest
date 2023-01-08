@@ -15,7 +15,7 @@ namespace SignalRApp.Repositories.Interfaces
         /// </summary>
         /// <param name="login">Имя пользователя или email</param>
         /// <returns>Сущность пользователя</returns>
-        public UserEntity FindItemByLoginOrEmail(string login);
+        public UserEntity GetItemByLoginOrEmail(string login);
 
         /// <summary>
         /// Метод для получения списка пользователей
@@ -35,6 +35,6 @@ namespace SignalRApp.Repositories.Interfaces
         /// </summary>
         /// <param name="id">Id пользователя в системе</param>
         /// <returns>Сущность пользователя</returns>
-        public UserEntity FindItemByGuid(Guid? id);
+        public UserEntity GetItemByGuid(Guid? id);
     }
 }

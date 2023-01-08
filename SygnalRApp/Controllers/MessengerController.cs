@@ -32,7 +32,7 @@ namespace SignalRApp.Controllers
         [Authorize]
         public IActionResult Users()
         {
-            var currentUserId = _accountService.GetCurrentUserId(User);
+            var currentUserId = _usersService.GetCurrentUserId(User);
             var result = _messengerService.GetTredsList(currentUserId);
 
             if (result.IsSuccess)
@@ -66,7 +66,7 @@ namespace SignalRApp.Controllers
         [Authorize]
         public JsonResult GetMessages(Guid recipientUserId)
         {
-            var currentUserId = _accountService.GetCurrentUserId(User);
+            var currentUserId = _usersService.GetCurrentUserId(User);
             var result = _messengerService.GetMessagesList(currentUserId, recipientUserId);
 
             var recipientInfo = _usersService.GetUserInfo(recipientUserId);

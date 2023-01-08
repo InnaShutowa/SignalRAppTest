@@ -2,11 +2,10 @@
 using Microsoft.IdentityModel.Tokens;
 using NLog;
 using SignalRApp.Entities;
-using SignalRApp.Enums;
-using SignalRApp.Extensions;
 using SignalRApp.Models;
 using SignalRApp.Models.AccountModels;
-using SignalRApp.Repositories.Interfaces;
+using SignalRApp.Services.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,52 +14,27 @@ using System.Threading.Tasks;
 
 namespace SignalRApp.Services
 {
-    /// <summary>
-    /// Сервис для работы с аккаунтом
-    /// </summary>
-    public class AccountService
+    /// <inheritdoc cref="IAccountService" />
+    public class AccountService : IAccountService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly IUserRepository _userRepository;
         private readonly UserManager<UserIdentity> _userManager;
         private readonly SignInManager<UserIdentity> _signInManager;
 
-        public AccountService(IUserRepository userRepository,
-            UserManager<UserIdentity> userManager,
+        public AccountService(UserManager<UserIdentity> userManager,
             SignInManager<UserIdentity> signInManager)
         {
-            _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        /// <summary>
-        /// Получает идентификатор пользователя в системе
-        /// </summary>
-        /// <param name="claimsPrincipal"></param>
-        /// <returns></returns>
-        public Guid? GetCurrentUserId(ClaimsPrincipal claimsPrincipal)
-        {
-            var userIdentity = _userManager.GetUserId(claimsPrincipal);
-
-            return _userRepository.GetUserIdByIdentityId(userIdentity);
-        }
-
-        /// <summary>
-        /// Метод для выхода из приложения
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public async Task LogoutUser()
         {
             await _signInManager.SignOutAsync();
         }
 
-        /// <summary>
-        /// Метод для авторизации пользователя
-        /// </summary>
-        /// <param name="model">Модель с авторизационными данными</param>
-        /// <returns>Модель ответа с результатами авторизации</returns>
+        /// <inheritdoc/>
         public async Task<ResultModel> LoginUser(AuthInputModel model)
         {
             model.Login = model.Login.Trim();

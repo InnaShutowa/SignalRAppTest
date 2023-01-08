@@ -19,7 +19,7 @@ namespace SignalRApp.Hubs
             _usersService = usersService;
         }
 
-        public async Task Send(string message, string userName)
+        public async Task Send(string message, string authorUserName, string recipientUserName)
         {
             await this.Clients.All.SendAsync("Send", message, userName);
         }
