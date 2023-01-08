@@ -22,5 +22,12 @@ namespace SignalRApp.Services.Interfaces
         /// <param name="userId">Id пользователя в системе</param>
         /// <returns>Модель информации о пользователе</returns>
         UserModel GetUserInfo(Guid? userId);
+
+        /// <summary>
+        /// Получает id пользователя
+        /// </summary>
+        /// <param name="userName">Имя пользователя</param>
+        /// <returns>Id пользователе</returns>
+        Guid? GetUserIdByUsername(string userName);
     }
 }

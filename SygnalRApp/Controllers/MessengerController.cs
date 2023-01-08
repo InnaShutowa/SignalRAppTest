@@ -5,21 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 
 using SignalRApp.Models.MessagerModels.ViewModels;
 using SignalRApp.Services;
+using SignalRApp.Services.Interfaces;
 
 namespace SignalRApp.Controllers
 {
-    [Route("Messenger")]
     public class MessengerController : Controller
     {
-        private readonly AccountService _accountService;
-        private readonly MessengerService _messengerService;
-        private readonly UsersService _usersService;
+        private readonly IMessengerService _messengerService;
+        private readonly IUsersService _usersService;
 
-        public MessengerController(AccountService accountService,
-            MessengerService messengerService,
-            UsersService usersService)
+        public MessengerController(IMessengerService messengerService,
+            IUsersService usersService)
         {
-            _accountService = accountService;
             _messengerService = messengerService;
             _usersService = usersService;
         }
@@ -62,14 +59,20 @@ namespace SignalRApp.Controllers
         /// </summary>
         /// <param name="recipientUserId">Id получателя</param>
         /// <returns>Модель сообщений в треде и данных собеседника</returns>
-        [HttpGet("/messages")]
+        [HttpGet]
         [Authorize]
-        public JsonResult GetMessages(Guid recipientUserId)
+        public JsonResult GetMessages(string recipientUserId)
         {
-            var currentUserId = _usersService.GetCurrentUserId(User);
-            var result = _messengerService.GetMessagesList(currentUserId, recipientUserId);
+            Guid userId;
+            if (!Guid.TryParse(recipientUserId, out userId))
+            {
+                return Json(null);
+            }
 
-            var recipientInfo = _usersService.GetUserInfo(recipientUserId);
+            var currentUserId = _usersService.GetCurrentUserId(User);
+            var result = _messengerService.GetMessagesList(currentUserId, userId);
+
+            var recipientInfo = _usersService.GetUserInfo(userId);
 
             if (result.IsSuccess)
             {

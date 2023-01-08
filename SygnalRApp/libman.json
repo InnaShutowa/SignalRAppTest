@@ -63,6 +63,10 @@
     {
       "library": "ionicons@6.0.4",
       "destination": "wwwroot/lib/ionicons/"
+    },
+    {
+      "library": "jquery@3.6.3",
+      "destination": "wwwroot/lib/jquery/"
     }
   ]
 }

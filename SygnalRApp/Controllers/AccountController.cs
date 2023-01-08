@@ -1,19 +1,15 @@
 ﻿using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Mvc;
-
-using SignalRApp.Models;
 using SignalRApp.Models.AccountModels;
-using SignalRApp.Repositories;
-using SignalRApp.Services;
+using SignalRApp.Services.Interfaces;
 
 namespace SignalRApp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AccountService _accountService;
+        private readonly IAccountService _accountService;
 
-        public AccountController(AccountService accountService)
+        public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
         }
@@ -21,9 +17,9 @@ namespace SignalRApp.Controllers
         /// <summary>
         /// Авторизация
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
+        /// <param name="username">Имя пользователя</param>
+        /// <param name="password">Пароль</param>
+        /// <returns>Представление чата</returns>
         [HttpPost("/token")]
         public async Task<IActionResult> Token(string username, string password)
         {

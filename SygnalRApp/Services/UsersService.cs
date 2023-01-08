@@ -29,6 +29,14 @@ namespace SignalRApp.Services
         }
 
         /// <inheritdoc/>
+        public Guid? GetUserIdByUsername(string userName)
+        {
+            var user = _userRepository.GetItemByLoginOrEmail(userName);
+
+            return user?.Id;
+        }
+
+        /// <inheritdoc/>
         public UserModel GetUserInfo(Guid? userId)
         {
             var userInfo = _userRepository.GetItemByGuid(userId);

@@ -18,7 +18,7 @@ namespace SignalRApp.Models.MessagerModels
         /// <summary>
         /// Исходящее ли сообщение
         /// </summary>
-        public bool IsOutgoing { get; set; }
+        public bool IsOutgoing { get; set; } 
 
         /// <summary>
         /// Дата и время отправки

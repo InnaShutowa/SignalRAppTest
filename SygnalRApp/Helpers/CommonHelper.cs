@@ -17,6 +17,7 @@ using SignalRApp.Extensions;
 using SignalRApp.Repositories;
 using SignalRApp.Repositories.Interfaces;
 using SignalRApp.Services;
+using SignalRApp.Services.Interfaces;
 
 namespace SignalRApp.Helpers
 {
@@ -185,9 +186,9 @@ namespace SignalRApp.Helpers
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
-            services.AddScoped<MessengerService>();
-            services.AddScoped<AccountService>();
-            services.AddScoped<UsersService>();
+            services.AddScoped<IMessengerService, MessengerService >();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUsersService, UsersService>();
         }
 
         /// <summary>

@@ -43,7 +43,7 @@ namespace SignalRApp.Repositories
             return _db.MessageEntities
                 .Where(a => a.RecipientUserId == recipientUserId)
                 .Where(a => a.AuthorUserId == authorUserId)
-                .Where(a=> !a.IsRead)
+                .Where(a => !a.IsRead)
                 .Count();
         }
 
@@ -51,8 +51,8 @@ namespace SignalRApp.Repositories
         public IEnumerable<MessageEntity> GetUsersTred(Guid recipientUserId, Guid authorUserId)
         {
             return _db.MessageEntities
-                .Where(a => a.RecipientUserId == recipientUserId)
-                .Where(a => a.AuthorUserId == authorUserId)
+                .Where(a => a.RecipientUserId == recipientUserId && a.AuthorUserId == authorUserId
+                    || a.RecipientUserId == authorUserId && a.AuthorUserId == recipientUserId)
                 .ToList();
         }
     }

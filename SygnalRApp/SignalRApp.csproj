@@ -104,6 +104,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\bootstrap\" />
+    <Folder Include="wwwroot\lib\jquery\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
 using SignalRApp.Services;
+using SignalRApp.Services.Interfaces;
 
 using System;
 using System.Threading.Tasks;
@@ -9,11 +10,11 @@ namespace SignalRApp.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly MessengerService _messengerService;
-        private readonly UsersService _usersService;
+        private readonly IMessengerService _messengerService;
+        private readonly IUsersService _usersService;
 
-        public ChatHub(MessengerService messengerService,
-            UsersService usersService)
+        public ChatHub(IMessengerService messengerService,
+            IUsersService usersService)
         {
             _messengerService = messengerService;
             _usersService = usersService;
@@ -21,6 +22,10 @@ namespace SignalRApp.Hubs
 
         public async Task Send(string message, string authorUserName, string recipientUserName)
         {
+            var authorUserId = _usersService.GetUserIdByUsername(authorUserName);
+            var recipientUserId = _usersService.GetUserIdByUsername(recipientUserName);
+
+            _messengerService.AddMessage(authorUserId, recipientUserId, message);
             await this.Clients.All.SendAsync("Send", message, authorUserName);
         }
 

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using NLog;
-
 using SignalRApp.Entities;
 using SignalRApp.Models;
 using SignalRApp.Models.MessagerModels;
@@ -26,14 +24,14 @@ namespace SignalRApp.Services
         }
 
         /// <inheritdoc/>
-        public ResultModel AddMessage(string authorUserName, 
-            string recipientUserName, 
+        public ResultModel AddMessage(Guid? authorUserId,
+            Guid? recipientUserId, 
             string text)
         {
             try
             {
-                var authorUser = _userRepository.GetItemByLoginOrEmail(authorUserName);
-                var recipientUser = _userRepository.GetItemByLoginOrEmail(recipientUserName);
+                var authorUser = _userRepository.GetItemByGuid(authorUserId);
+                var recipientUser = _userRepository.GetItemByGuid(recipientUserId);
 
                 if (authorUser == null || recipientUser == null)
                 {
@@ -52,7 +50,7 @@ namespace SignalRApp.Services
             }
             catch (Exception ex)
             {
-                _logger.Error($"Error {ex.Message}, authorUserName = {authorUserName},  recipientUserName={recipientUserName}");
+                _logger.Error($"Error {ex.Message}, authorUserId = {authorUserId},  recipientUserId={recipientUserId}");
 
                 return new ResultModel($"Что-то пошло не так, попробуйте снова позже.");
             }

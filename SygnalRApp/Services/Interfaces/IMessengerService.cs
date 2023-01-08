@@ -14,12 +14,12 @@ namespace SignalRApp.Services.Interfaces
         /// <summary>
         /// Добавляет сообщение в базу
         /// </summary>
-        /// <param name="authorUserName">Имя пользователя автора</param>
-        /// <param name="recipientUserName">Имя пользователя получателя</param>
+        /// <param name="authorUserId">Id пользователя автора</param>
+        /// <param name="recipientUserId">Id пользователя получателя</param>
         /// <param name="text">Текст сообщения</param>
         /// <returns>Результат - успешно или текст ошибки</returns>
-        ResultModel AddMessage(string authorUserName,
-            string recipientUserName,
+        ResultModel AddMessage(Guid? authorUserId,
+            Guid? recipientUserId,
             string text);
 
         /// <summary>
