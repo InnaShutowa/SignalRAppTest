@@ -17,8 +17,8 @@ namespace SignalRApp.Services.Interfaces
         /// <param name="authorUserId">Id пользователя автора</param>
         /// <param name="recipientUserId">Id пользователя получателя</param>
         /// <param name="text">Текст сообщения</param>
-        /// <returns>Результат - успешно или текст ошибки</returns>
-        ResultModel AddMessage(Guid? authorUserId,
+        /// <returns>Модель созданного сообщения</returns>
+        ResultDataModel<MessageModel> AddMessage(Guid? authorUserId,
             Guid? recipientUserId,
             string text);
 

@@ -8,9 +8,14 @@ namespace SignalRApp.Models.MessagerModels.ViewModels
     public class MessagesViewModel
     {
         /// <summary>
-        /// Имя собеседника
+        /// Полное имя собеседника
         /// </summary>
         public string RecipientName { get; set; }
+
+        /// <summary>
+        /// Логин собеседника
+        /// </summary>
+        public string RecipientUserName { get; set; }
 
         /// <summary>
         /// Фото собеседника

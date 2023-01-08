@@ -1,4 +1,7 @@
-﻿function getSelected(userId) {
+﻿
+var selectedUserName = "";
+
+function getSelected(userId) {
     $.getJSON("/Messenger/GetMessages", { "recipientUserId": userId }, getMessages);
 }
 
@@ -9,7 +12,11 @@ function getMessages(data) {
     elem.innerText = data.recipientName;
     avatarElem.src = data.recipientJpegPhoto;
 
+    selectedUserName = data.recipientUserName;
+
     if (data.messages !== null && data.messages !== undefined) {
+        dropElementsInside("chatroom");
+
         for (var i = 0; i < data.messages.length; i++) {
             if (data.messages[i].isOutgoing) {
                 addOutgoingMess(data.messages[i].sendDate, data.messages[i].text, "");
@@ -30,7 +37,7 @@ function addIncomingMess(time, text, userName, photo) {
     imgElem.className = "rounded-circle mr-1";
     imgElem.width = 40;
     imgElem.height = 40;
-    imgElem.src = photo !== null && photo !== undefined ? photo : "https://bootdey.com/img/Content/avatar/avatar1.png";
+    imgElem.src = photo !== null && photo !== undefined && photo !== "" ? photo : "https://bootdey.com/img/Content/avatar/avatar1.png";
 
     var timeElem = document.createElement("div");
     timeElem.className = "text-muted small text-nowrap mt-2";
@@ -65,7 +72,7 @@ function addOutgoingMess(time, text, photo) {
     imgElem.className = "rounded-circle mr-1";
     imgElem.width = 40;
     imgElem.height = 40;
-    imgElem.src = photo !== null && photo !== undefined ? photo : "https://bootdey.com/img/Content/avatar/avatar1.png";
+    imgElem.src = photo !== null && photo !== undefined && photo !== "" ? photo : "https://bootdey.com/img/Content/avatar/avatar1.png";
 
     var timeElem = document.createElement("div");
     timeElem.className = "text-muted small text-nowrap mt-2";
@@ -99,3 +106,12 @@ function addElementAfter(elementName, elem) {
         firstElem.after(elem);
     }
 }
+
+function dropElementsInside(elementName) {
+    var container = document.getElementById(elementName);
+
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+}
+

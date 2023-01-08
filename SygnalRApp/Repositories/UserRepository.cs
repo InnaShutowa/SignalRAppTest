@@ -19,11 +19,12 @@ namespace SignalRApp.Repositories
         }
 
         /// <inheritdoc/>
-        public Guid? AddItem(BaseEntity usr)
+        public BaseEntity AddItem(BaseEntity usr)
         {
             var res = _db.UserEntities.Add(usr as UserEntity);
             _db.SaveChanges();
-            return res.Entity.Id;
+
+            return res.Entity;
         }
 
         /// <inheritdoc/>

@@ -10,7 +10,6 @@
 @{
     var noImagePhoto = "../../assets/images.png";
     var treds = @Model?.TredModels;
-    var selectedUserName = "";
 }
 
 @model UsersViewModel
@@ -98,16 +97,6 @@
                             </div>
                         </div>
 
-                        <a href="#" class="list-group-item list-group-item-action border-0">
-                            <div class="badge bg-success float-right">1</div>
-                            <div class="d-flex align-items-start">
-                                <img src="@noImagePhoto" class="rounded-circle mr-1" alt="Vanessa Tucker" width="40" height="40">
-                                <div class="flex-grow-1 ml-3">
-                                    Vanessa Tucker
-                                </div>
-                            </div>
-                        </a>
-
                         @if (@treds != null && @treds.Any())
                         {
                             @for (var i = 0; i < @treds.Count; i++)
@@ -142,7 +131,7 @@
                             </div>
                         </div>
 
-                        <div class="chat-history" id="chatroom">
+                        <div class="chat-history" id="chatroom" data-spy="scroll" data-offset="50" style="position: relative; height: 350px; overflow: auto;"> 
                         </div>
 
                         <div class="flex-grow-0 py-3 px-4 border-top">
@@ -168,14 +157,14 @@
             const currentUser = "@Model.UserName";
 
             // получение сообщения от сервера
-            hubConnection.on('Send', function(message, userName) {
+            hubConnection.on('Send', function(message, userName, sendDate) {
                 console.log(currentUser);
                 console.log(userName);
 
                 if (userName == currentUser) {
-                    addOutgoingMess("12:00", message);
+                    addOutgoingMess(sendDate, message);
                 } else {
-                    addIncomingMess("19:00", message, userName);
+                    addIncomingMess(sendDate, message, userName);
                 }
             });
 

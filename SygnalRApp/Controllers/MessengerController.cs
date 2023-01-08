@@ -80,7 +80,8 @@ namespace SignalRApp.Controllers
                 {
                     Messages = result.Data,
                     RecipientJpegPhoto = recipientInfo.JpegPhoto,
-                    RecipientName = recipientInfo.FullName
+                    RecipientName = recipientInfo.FullName,
+                    RecipientUserName = recipientInfo.UserName
                 });
             }
 

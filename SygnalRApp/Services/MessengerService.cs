@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using NLog;
+
 using SignalRApp.Entities;
+using SignalRApp.Extensions;
 using SignalRApp.Models;
 using SignalRApp.Models.MessagerModels;
 using SignalRApp.Repositories.Interfaces;
@@ -24,8 +27,8 @@ namespace SignalRApp.Services
         }
 
         /// <inheritdoc/>
-        public ResultModel AddMessage(Guid? authorUserId,
-            Guid? recipientUserId, 
+        public ResultDataModel<MessageModel> AddMessage(Guid? authorUserId,
+            Guid? recipientUserId,
             string text)
         {
             try
@@ -35,10 +38,10 @@ namespace SignalRApp.Services
 
                 if (authorUser == null || recipientUser == null)
                 {
-                    return new ResultModel("Пользователь не найден, попробуйте снова позже.");
+                    return new ResultDataModel<MessageModel>("Пользователь не найден, попробуйте снова позже.");
                 }
 
-                var messages = _messageRepository.AddItem(new MessageEntity
+                var message = (MessageEntity)_messageRepository.AddItem(new MessageEntity
                 {
                     AuthorUserId = authorUser.Id,
                     RecipientUserId = recipientUser.Id,
@@ -46,13 +49,23 @@ namespace SignalRApp.Services
                     Text = text
                 });
 
-                return new ResultModel(true);
+                if (message == null)
+                {
+                    return new ResultDataModel<MessageModel>("Операция завершилась с ошибкой, попробуйте снова позже.");
+                }
+
+                return new ResultDataModel<MessageModel>(new MessageModel
+                {
+                    IsOutgoing = true,
+                    SendDate = message.CreatedAt.ToChatString(),
+                    Text = message.Text
+                });
             }
             catch (Exception ex)
             {
                 _logger.Error($"Error {ex.Message}, authorUserId = {authorUserId},  recipientUserId={recipientUserId}");
 
-                return new ResultModel($"Что-то пошло не так, попробуйте снова позже.");
+                return new ResultDataModel<MessageModel>($"Что-то пошло не так, попробуйте снова позже.");
             }
         }
 
@@ -71,11 +84,11 @@ namespace SignalRApp.Services
 
                 var messages = _messageRepository
                     .GetUsersTred(recipientUserId.Value, currentUserId.Value)
-                    .OrderByDescending(a => a.CreatedAt)
+                    .OrderBy(a => a.CreatedAt)
                     .Select(a => new MessageModel
                     {
                         Text = a.Text,
-                        SendDate = a.CreatedAt,
+                        SendDate = a.CreatedAt.ToChatString(),
                         IsOutgoing = a.AuthorUserId == currentUserId
                     })
                     .ToList();

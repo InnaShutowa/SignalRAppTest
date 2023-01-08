@@ -20,13 +20,16 @@ namespace SignalRApp.Hubs
             _usersService = usersService;
         }
 
-        public async Task Send(string message, string authorUserName, string recipientUserName)
+        public async Task Send(string text, string authorUserName, string recipientUserName)
         {
             var authorUserId = _usersService.GetUserIdByUsername(authorUserName);
             var recipientUserId = _usersService.GetUserIdByUsername(recipientUserName);
 
-            _messengerService.AddMessage(authorUserId, recipientUserId, message);
-            await this.Clients.All.SendAsync("Send", message, authorUserName);
+            var message = _messengerService.AddMessage(authorUserId, recipientUserId, text);
+            if (message.IsSuccess)
+            {
+                await this.Clients.All.SendAsync("Send", text, authorUserName, message.Data.SendDate);
+            }
         }
 
     }

@@ -17,6 +17,6 @@ namespace SignalRApp.Repositories.Interfaces
         /// <summary>
         /// Добавление сущности
         /// </summary>
-        Guid? AddItem(BaseEntity usr);
+        BaseEntity AddItem(BaseEntity usr);
     }
 }

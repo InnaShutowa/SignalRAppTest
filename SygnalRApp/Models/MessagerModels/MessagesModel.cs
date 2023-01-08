@@ -23,6 +23,6 @@ namespace SignalRApp.Models.MessagerModels
         /// <summary>
         /// Дата и время отправки
         /// </summary>
-        public DateTime SendDate { get; set; }
+        public string SendDate { get; set; }
     }
 }
