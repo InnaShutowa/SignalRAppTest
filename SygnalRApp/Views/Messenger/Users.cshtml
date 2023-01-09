@@ -1,0 +1,193 @@
+﻿@using SignalRApp.Controllers
+@using SignalRApp.Models.MessagerModels.ViewModels
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/dist/css/styles.css" />
+
+@{
+    var noImagePhoto = "../../assets/images.png";
+    var treds = @Model?.TredModels;
+}
+
+@model UsersViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            margin-top: 20px;
+        }
+
+        .chat-online {
+            color: #34ce57
+        }
+
+        .chat-offline {
+            color: #e4606d
+        }
+
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            max-height: 800px;
+            overflow-y: scroll
+        }
+
+        .chat-message-left,
+        .chat-message-right {
+            display: flex;
+            flex-shrink: 0
+        }
+
+        .chat-message-left {
+            margin-right: auto
+        }
+
+        .chat-message-right {
+            flex-direction: row-reverse;
+            margin-left: auto
+        }
+
+        .py-3 {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
+        .px-4 {
+            padding-right: 1.5rem !important;
+            padding-left: 1.5rem !important;
+        }
+
+        .flex-grow-0 {
+            flex-grow: 0 !important;
+        }
+
+        .border-top {
+            border-top: 1px solid #dee2e6 !important;
+        }
+    </style>
+</head>
+<body>
+    <main class="content">
+        <div class="container p-0">
+
+            <div class="row">
+                <h1 class="col-mb-4">Messages</h1>
+                <button type="button" style="margin-top: 15px" class="chat-message-right mb-4 align-middle" id="logOut">Выйти</button>
+            </div>
+
+
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-12 col-lg-5 col-xl-3 border-right" id="userContainer">
+
+                        <div class="px-4 d-none d-md-block">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <input type="text" class="form-control my-3" placeholder="Search...">
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (@treds != null && @treds.Any())
+                        {
+                            @for (var i = 0; i < @treds.Count; i++)
+                            {
+                                var url = string.IsNullOrWhiteSpace(@treds[@i].CompanionJpegPhoto) ? noImagePhoto : @treds[i].CompanionJpegPhoto;
+
+                                <a class="list-group-item list-group-item-action border-0" onclick="getSelected('@Model.TredModels[@i].CompanionUserId')">
+                                    <div class="badge bg-success float-right">@treds[@i].UnreadMessagesCount</div>
+                                    <div class="d-flex align-items-start">
+                                        <img src="@url"
+                                     class="rounded-circle mr-1"
+                                     alt="@treds[i].CompanionUsername"
+                                     width="40" height="40">
+
+                                        <div class="flex-grow-1 ml-3">
+                                            @treds[i].CompanionUsername
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        }
+
+                        <hr class="d-block d-lg-none mt-1 mb-0">
+                    </div>
+                    <div class="col-12 col-lg-7 col-xl-9">
+                        <div class="py-2 px-4 border-bottom d-none d-lg-block">
+                            <div class="d-flex align-items-center py-1">
+                                <div class="position-relative">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40" id="selectedUserAvatar">
+                                </div>
+                                <div class="flex-grow-1 pl-3" id="selectedUser"></div>
+                            </div>
+                        </div>
+
+                        <div class="chat-history" id="chatroom" data-spy="scroll" data-offset="50" style="position: relative; height: 350px; overflow: auto;"> 
+                        </div>
+
+                        <div class="flex-grow-0 py-3 px-4 border-top">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Type your message" id="message">
+                                <button class="btn btn-primary" id="sendBtn">Send</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/js/signalr/dist/browser/signalr.min.js"></script>
+        <script src="/scripts/users.js"></script>
+
+        <script>
+            const hubConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/chat")
+                .build();
+
+            const currentUser = "@Model.UserName";
+
+            // получение сообщения от сервера
+            hubConnection.on('Send', function(message, userName, sendDate) {
+                console.log(currentUser);
+                console.log(userName);
+
+                if (userName == currentUser) {
+                    addOutgoingMess(sendDate, message);
+                } else {
+                    addIncomingMess(sendDate, message, userName);
+                }
+            });
+
+            // отправка сообщения на сервер
+            document.getElementById("sendBtn").addEventListener("click", function(e) {
+                let message = document.getElementById("message").value;
+                document.getElementById("message").value = "";
+                hubConnection.invoke("Send", message, currentUser, selectedUserName);
+            });
+
+            // отправка сообщения на сервер
+            document.getElementById("message").addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    console.log(currentUser);
+
+                    let message = document.getElementById("message").value;
+                    document.getElementById("message").value = "";
+                    hubConnection.invoke("Send", message, currentUser, selectedUserName);
+                }
+            });
+
+            hubConnection.start();
+        </script>
+    </main>
+</body>
+</html>

@@ -1,23 +1,29 @@
-﻿using Newtonsoft.Json;
-using System;
-
-namespace SignalRApp.Models
+﻿namespace SignalRApp.Models
 {
-    public class ResultModel<T>
+    /// <summary>
+    /// Модель результата работы метода
+    /// </summary>
+    public class ResultModel
     {
         public ResultModel(string error)
         {
             IsSuccess = false;
             Error = error;
         }
-        public ResultModel(T authModel)
+
+        public ResultModel(bool result)
         {
-            Data = authModel;
-            IsSuccess = true;
+            IsSuccess = result;
         }
 
+        /// <summary>
+        /// Статус операции
+        /// </summary>
         public bool IsSuccess { get; set; }
+
+        /// <summary>
+        /// Ошибка, если есть
+        /// </summary>
         public string Error { get; set; }
-        public T Data { get; set; }
     }
 }

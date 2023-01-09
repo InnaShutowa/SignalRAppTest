@@ -1,65 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Newtonsoft.Json;
+
 using NLog;
+
 using SignalRApp.Entities;
-using SignalRApp.Interfaces;
+using SignalRApp.Repositories.Interfaces;
 
 namespace SignalRApp.Repositories
 {
+    /// <inheritdoc cref="IMessageRepository" />
     public class MessageRepository : IMessageRepository
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
-        public Guid? AddItem(BaseEntity usr)
+        private readonly ApplicationContext _db;
+
+        public MessageRepository(ApplicationContext db)
         {
-            try
-            {
-                using (var db = new ApplicationContext())
-                {
-                    var res = db.MessageEntities.Add(usr as MessageEntity);
-                    db.SaveChanges();
-                    return res.Entity.Id;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error in AddItem MessageRepository {ex.Message}. Input data {JsonConvert.SerializeObject(usr)}.");
-                return null;
-            }
+            _db = db;
         }
 
+        /// <inheritdoc/>
+        public BaseEntity AddItem(BaseEntity usr)
+        {
+            var res = _db.MessageEntities.Add(usr as MessageEntity);
+            _db.SaveChanges();
+
+            return res.Entity;
+        }
+
+        /// <inheritdoc/>
         public void UpdateItem(BaseEntity item)
         {
-            try
-            {
-                using (var db = new ApplicationContext())
-                {
-                    db.MessageEntities.Update(item as MessageEntity);
-                    db.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error in FoundItemByLogin MessageRepository with error {ex.Message}");
-            }
+            _db.MessageEntities.Update(item as MessageEntity);
+            _db.SaveChanges();
         }
 
-        public List<MessageEntity> GetUnreadMessages(Guid recipientUserId, Guid authorUserId)
+        /// <inheritdoc/>
+        public int GetUnreadMessages(Guid recipientUserId, Guid authorUserId)
         {
-            var result = new List<MessageEntity>();
-            try
-            {
-                using (var db = new ApplicationContext())
-                {
-                    result = db.MessageEntities.Where(a => a.RecipientUserId == recipientUserId && a.AuthorUserId == authorUserId && !a.IsRead).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error in FoundItemByLogin MessageRepository with error {ex.Message}");
-            }
-            return result;
+            return _db.MessageEntities
+                .Where(a => a.RecipientUserId == recipientUserId)
+                .Where(a => a.AuthorUserId == authorUserId)
+                .Where(a => !a.IsRead)
+                .Count();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<MessageEntity> GetUsersTred(Guid recipientUserId, Guid authorUserId)
+        {
+            return _db.MessageEntities
+                .Where(a => a.RecipientUserId == recipientUserId && a.AuthorUserId == authorUserId
+                    || a.RecipientUserId == authorUserId && a.AuthorUserId == recipientUserId)
+                .ToList();
         }
     }
 }
