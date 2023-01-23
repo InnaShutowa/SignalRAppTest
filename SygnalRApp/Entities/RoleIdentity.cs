@@ -12,6 +12,6 @@ namespace SignalRApp.Entities
         /// <summary>
         /// Название роли для вывода на странице
         /// </summary>
-        public string? DisplayName { get; set; }
+        public string DisplayName { get; set; }
     }
 }

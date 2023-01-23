@@ -1,7 +1,5 @@
 ﻿using SignalRApp.Entities;
 
-using System;
-
 namespace SignalRApp.Repositories.Interfaces
 {
     /// <summary>

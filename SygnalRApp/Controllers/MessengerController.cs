@@ -1,14 +1,14 @@
 ﻿using System;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using SignalRApp.Models.MessagerModels.ViewModels;
-using SignalRApp.Services;
 using SignalRApp.Services.Interfaces;
 
 namespace SignalRApp.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с чатом
+    /// </summary>
     public class MessengerController : Controller
     {
         private readonly IMessengerService _messengerService;
@@ -41,16 +41,6 @@ namespace SignalRApp.Controllers
                 });
             }
 
-            return View();
-        }
-
-        /// <summary>
-        /// Разлогинивает пользователя
-        /// </summary>
-        [HttpGet("/logout")]
-        [Authorize]
-        public IActionResult Logout()
-        {
             return View();
         }
 
