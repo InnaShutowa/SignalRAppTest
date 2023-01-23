@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using SignalRApp.Entities;
 
 namespace SignalRApp.Repositories.Interfaces

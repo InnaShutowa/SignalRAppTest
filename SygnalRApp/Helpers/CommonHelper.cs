@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using NLog;
-
 using SignalRApp.Entities;
 using SignalRApp.Enums;
 using SignalRApp.Extensions;
@@ -146,13 +142,10 @@ namespace SignalRApp.Helpers
         /// </remarks>
         private static IEnumerable<(UserEntity User, string Password)> GetAdminUsers()
         {
-            var users = new List<(UserEntity, string)>  {
+            return new List<(UserEntity, string)>  {
                     (new UserEntity("Inna", "Shutova", "inna.shutova", "i.schutowa2011@yandex.ru", ""), "1922091998Test"),
                     (new UserEntity("Nataly", "Myasnikova", "nataly.myasn", "nataly@yandex.ru", ""), "1922091998Test")
                 };
-
-            return users;
-            //new List<(UserEntity, string)> { };
         }
 
         /// <summary>

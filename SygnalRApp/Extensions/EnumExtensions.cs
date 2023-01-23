@@ -16,7 +16,7 @@ namespace SignalRApp.Extensions
         /// <typeparam name="T">Тип перечисления.</typeparam>
         /// <param name="value">Значение.</param>
         /// <returns>Отображаемое значение или null, если значение null.</returns>
-        public static string? GetDisplayName<T>(this T? value) where T : struct, Enum
+        public static string GetDisplayName<T>(this T? value) where T : struct, Enum
         {
             var valueString = value?.ToString();
             if (valueString == null)

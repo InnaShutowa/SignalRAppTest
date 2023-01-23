@@ -1,5 +1,4 @@
 ﻿using SignalRApp.Entities;
-
 using System;
 using System.Collections.Generic;
 

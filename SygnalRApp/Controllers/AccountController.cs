@@ -5,6 +5,9 @@ using SignalRApp.Services.Interfaces;
 
 namespace SignalRApp.Controllers
 {
+    /// <summary>
+    /// Контроллер для действий с аккаунтом - авторизация, лог аут
+    /// </summary>
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
@@ -15,14 +18,15 @@ namespace SignalRApp.Controllers
         }
 
         /// <summary>
-        /// Выход из аккаунта
+        /// Редирект на главную, если юзер не авторизован
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Редирект на главную</returns>
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
         /// <summary>
         /// Авторизация
         /// </summary>
@@ -49,7 +53,7 @@ namespace SignalRApp.Controllers
         /// <summary>
         /// Выход из аккаунта
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Редирект на главную</returns>
         [HttpPost("/logout")]
         public async Task<IActionResult> Logout()
         {

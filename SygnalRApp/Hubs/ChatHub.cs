@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-
-using SignalRApp.Services;
 using SignalRApp.Services.Interfaces;
-
-using System;
 using System.Threading.Tasks;
 
 namespace SignalRApp.Hubs
