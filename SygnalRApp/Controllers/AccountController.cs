@@ -15,6 +15,15 @@ namespace SignalRApp.Controllers
         }
 
         /// <summary>
+        /// Выход из аккаунта
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Login()
+        {
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+        /// <summary>
         /// Авторизация
         /// </summary>
         /// <param name="username">Имя пользователя</param>

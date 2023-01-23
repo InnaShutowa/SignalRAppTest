@@ -9,7 +9,8 @@ namespace SignalRApp.Controllers
             return View();
         }
 
-        public IActionResult Auth()
+        [HttpGet("error")]
+        public IActionResult Error()
         {
             return View();
         }
